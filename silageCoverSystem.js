@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO correct the variables
 const tarpSizeA = [13, 22];
 const tarpSizeB = [16, 19];
 const pvcWidth1 = `${tarpSizeA[0]} x ${tarpSizeA[1]}`;
@@ -21,7 +20,8 @@ const rollPipeEL = document.getElementById('roll--pipe');
 btnOK.addEventListener('click', function () {
   const width = Number(document.querySelector('.width').value);
   const length = Number(document.querySelector('.length').value);
-  const gearListCalc = function (pitWidth, pitLength) {
+  const bottomWidth = Number(document.querySelector('.pit-bottom-width').value);
+  const gearListCalc = function (pitWidth, pitLength, pitBottomWidth) {
     // tarp adaptor according to given pit width
 
     const tarpAdaptor = function () {
@@ -186,11 +186,12 @@ btnOK.addEventListener('click', function () {
     //roll pipe units calculator
     const rollPipeCalc = function () {
       if (systemsNum() === 1) {
-        const rollPipesDivision1 = pitWidth / rollPipeLength;
+        const rollPipesDivision1 = pitBottomWidth / rollPipeLength;
         const rollPipeUnits = Math.floor(rollPipesDivision1);
-        const aditionalpiece = Math.round(
-          (rollPipesDivision1 - rollPipeUnits) * 3
-        );
+        const aditionalpiece = (
+          (rollPipesDivision1 - rollPipeUnits) *
+          3
+        ).toFixed(1);
         return (rollPipeEL.textContent = `${rollPipeUnits} roll-pipe units are needed + ${aditionalpiece} meter piece.`);
       } else if (systemsNum() === 2) {
         if (tarpAdaptor() === `${pvcWidth1} + ${pvcWidth1}`) {
@@ -215,8 +216,6 @@ btnOK.addEventListener('click', function () {
       }
     };
     console.log(rollPipeCalc());
-
-    //TODO - make the object items to be displayed properly when runing the program
 
     // calculating the number of winch sets required for the pit
     const winchSetCalc = function () {
@@ -245,7 +244,14 @@ btnOK.addEventListener('click', function () {
     };
     console.log(winchSetCalc());
   };
-  gearListCalc(width, length);
+  //price calculator per square meter
+  const priceCalc = sqmCoverCost => width * length * sqmCoverCost;
+  const backWallPrice = priceCalc(115);
+  const openPitPrice = priceCalc(85);
+  console.log(openPitPrice);
+  console.log(backWallPrice);
+
+  gearListCalc(width, length, bottomWidth);
 });
 
 // the function that measures the amount of each component according to the pit's measurements
